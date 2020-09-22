@@ -2,13 +2,15 @@ import { GraphQLServer } from 'graphql-yoga';
 import Author from './resolvers/Author';
 import Book from './resolvers/Book';
 import db from './db';
-import Query from './resolvers/Query.js';
+import Mutation from './resolvers/Mutation';
+import Query from './resolvers/Query';
 
 const context = { db };
 
 const resolvers = {
   Author,
   Book,
+  Mutation,
   Query,
 };
 
