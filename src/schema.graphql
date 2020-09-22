@@ -1,0 +1,29 @@
+type Author {
+  id: ID!
+  name: String!
+  country: String!
+  register_by: User!
+}
+
+type Book {
+  id: ID!
+  description: String!
+  price: Float!
+  quantity: Int!
+  register_by: User!
+  title: String!
+  writted_by: Author!
+}
+
+type User {
+  id: ID!
+  name: String
+  lastName: String
+}
+
+type Query {
+  author(id: ID): [Author!]!
+  book(id: ID): [Book!]!
+  hello(name: String): String!
+  user(id: ID): [User!]!
+}
