@@ -6,6 +6,16 @@ type Author {
   register_by: User!
 }
 
+type AuthorSubscriptionPayload {
+  mutation: MutationType!
+  data: Author!
+}
+
+type BookSubscriptionPayload {
+  mutation: MutationType!
+  data: Book!
+}
+
 type Book {
   id: ID!
   description: String!
@@ -21,13 +31,6 @@ type User {
   name: String
   email: String
   lastName: String
-}
-
-type Query {
-  author(id: ID): [Author!]!
-  book(id: ID): [Book!]!
-  hello(name: String): String!
-  user(id: ID): [User!]!
 }
 
 input createAuthorInput {
@@ -74,6 +77,19 @@ input updateUserInput {
   password: String
 }
 
+enum MutationType {
+  CREATED
+  DELETED
+  UPDATED
+}
+
+type Query {
+  author(id: ID): [Author!]!
+  book(id: ID): [Book!]!
+  hello(name: String): String!
+  user(id: ID): [User!]!
+}
+
 type Mutation {
   createAuthor(input: createAuthorInput!): Author!
   createBook(input: createBookInput!): Book!
@@ -82,4 +98,10 @@ type Mutation {
   updateAuthor(id: ID!, input: updateAuthorInput!): Author!
   updateBook(id: ID!, input: updateBookInput!): Book!
   updateUser(id: ID!, input: updateUserInput!): User!
+}
+
+type Subscription {
+  count: Int!
+  author: AuthorSubscriptionPayload!
+  book(authorId: ID!): BookSubscriptionPayload!
 }

@@ -1,17 +1,20 @@
-import { GraphQLServer } from 'graphql-yoga';
+import { GraphQLServer, PubSub } from 'graphql-yoga';
 import Author from './resolvers/Author';
 import Book from './resolvers/Book';
 import db from './db';
 import Mutation from './resolvers/Mutation';
 import Query from './resolvers/Query';
+import Subscription from './resolvers/Subscription';
 
-const context = { db };
+const pubsub = new PubSub();
+const context = { db, pubsub };
 
 const resolvers = {
   Author,
   Book,
   Mutation,
   Query,
+  Subscription,
 };
 
 const server = new GraphQLServer({
