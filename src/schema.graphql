@@ -33,6 +33,24 @@ type User {
   lastname: String
 }
 
+input AuthorOrderByInput {
+  id: OrderByArg
+  name: OrderByArg
+  country: OrderByArg
+}
+
+input BookOrderByInput {
+  id: OrderByArg
+  title: OrderByArg
+  description: OrderByArg
+  quantity: OrderByArg
+}
+
+enum OrderByArg {
+  asc
+  desc
+}
+
 input createAuthorInput {
   name: String!
   country: String!
@@ -48,10 +66,23 @@ input createBookInput {
   writted_by: ID
 }
 
-input createUserInput {
+input loginInput {
+  email: String!
+  password: String!
+}
+
+input signUpInput {
   name: String!
   email: String!
   lastname: String!
+  password: String!
+}
+
+input updateUserInput {
+  name: String
+  email: String
+  lastname: String
+  password: String
 }
 
 input updateAuthorInput {
@@ -69,11 +100,9 @@ input updateBookInput {
   writted_by: ID
 }
 
-input updateUserInput {
-  name: String
-  email: String
-  lastname: String
-  password: String
+type AuthPayload {
+  user: User!
+  token: String!
 }
 
 enum MutationType {
@@ -83,8 +112,8 @@ enum MutationType {
 }
 
 type Query {
-  author(id: ID): [Author!]!
-  book(id: ID): [Book!]!
+  author(id: ID, orderBy: AuthorOrderByInput, take: Int, skip: Int): [Author!]!
+  book(id: ID, orderBy: BookOrderByInput, take: Int, skip: Int): [Book!]!
   hello(name: String): String!
   user(id: ID): [User!]!
 }
@@ -92,8 +121,9 @@ type Query {
 type Mutation {
   createAuthor(input: createAuthorInput!): Author!
   createBook(input: createBookInput!): Book!
-  createUser(input: createUserInput!): User!
   deleteBook(id: ID!): Book!
+  login(input: loginInput!): AuthPayload!
+  signUp(input: signUpInput!): AuthPayload!
   updateAuthor(id: ID!, input: updateAuthorInput!): Author!
   updateBook(id: ID!, input: updateBookInput!): Book!
   updateUser(id: ID!, input: updateUserInput!): User!
