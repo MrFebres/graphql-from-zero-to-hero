@@ -1,12 +1,24 @@
-import Author from './Author';
+import Author from './Author'
 
 const Book = {
-  writted_by: (parent, args, { db }, info) => {
-    return db.authors.find(author => author.id === parent.writted_by);
+  register_by: (parent, args, { prisma }, info) => {
+    return prisma.books
+      .findOne({
+        where: {
+          id: parent.id,
+        },
+      })
+      .users()
   },
-  register_by: (parent, args, { db }, info) => {
-    return db.users.find(user => user.id === parent.register_by);
+  writted_by: (parent, args, { prisma }, info) => {
+    return prisma.books
+      .findOne({
+        where: {
+          id: parent.id,
+        },
+      })
+      .authors()
   },
-};
+}
 
-export default Book;
+export default Book
