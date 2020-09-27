@@ -1,6 +1,9 @@
+import { getUserId } from '../utils'
+
 const Subscription = {
   count: {
-    subscribe(parent, arg, { pubsub }, info) {
+    subscribe(parent, arg, { pubsub, request }, info) {
+      const userId = getUserId(request)
       let count = 0
 
       setInterval(() => {
@@ -13,11 +16,13 @@ const Subscription = {
   },
   author: {
     subscribe(parent, arg, { pubsub }, info) {
+      const userId = getUserId(request)
       return pubsub.asyncIterator('author')
     },
   },
   book: {
     subscribe(parent, { authorId }, { db, pubsub }, info) {
+      const userId = getUserId(request)
       return pubsub.asyncIterator(`book - ${authorId}`)
     },
   },

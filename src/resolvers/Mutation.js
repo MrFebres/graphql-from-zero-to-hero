@@ -1,6 +1,19 @@
+import {
+  generateToken,
+  getUserId,
+  hashPassword,
+  validatePassword,
+} from '../utils'
+
 const Mutation = {
-  createAuthor: async (parent, { input }, { prisma, pubsub }, info) => {
+  createAuthor: async (
+    parent,
+    { input },
+    { prisma, pubsub, request },
+    info
+  ) => {
     const { register_by, ...rest } = input
+    const userId = getUserId(request)
 
     const newAuthor = await prisma.authors.create({
       data: {
@@ -22,8 +35,9 @@ const Mutation = {
 
     return newAuthor
   },
-  createBook: async (parent, { input }, { prisma, pubsub }, info) => {
+  createBook: async (parent, { input }, { prisma, pubsub, request }, info) => {
     const { register_by, writted_by, ...rest } = input
+    const userId = getUserId(request)
 
     const newBook = await prisma.books.create({
       data: {
@@ -50,10 +64,9 @@ const Mutation = {
 
     return newBook
   },
-  createUser: (parent, { input }, { prisma }, info) => {
-    return prisma.users.create({ data: { ...input } })
-  },
-  deleteBook: async (parent, { id }, { prisma, pubsub }, info) => {
+  deleteBook: async (parent, { id }, { prisma, pubsub, request }, info) => {
+    const userId = getUserId(request)
+
     const deletedBook = await prisma.books.delete({
       where: {
         id,
@@ -69,11 +82,42 @@ const Mutation = {
 
     return deletedBook
   },
-  updateAuthor: async (parent, { id, input }, { prisma, pubsub }, info) => {
-    const { register_by } = input
+  login: async (parent, { input }, { prisma }, info) => {
+    const user = await prisma.users.findOne({
+      where: {
+        email: input.email,
+      },
+    })
+
+    const isValid = await validatePassword(input.password, user.password)
+
+    if (!isValid) throw new Error('Invalid Password')
+
+    return { user, token: generateToken(user.id) }
+  },
+  signUp: async (parent, { input }, { prisma }, info) => {
+    const password = await hashPassword(input.password)
+
+    const user = await prisma.users.create({
+      data: {
+        ...input,
+        password,
+      },
+    })
+
+    return { user, token: generateToken(user.id) }
+  },
+  updateAuthor: async (
+    parent,
+    { id, input },
+    { prisma, pubsub, request },
+    info
+  ) => {
+    const { register_by, ...rest } = input
+    const userId = getUserId(request)
 
     if (register_by)
-      input.users = {
+      rest.users = {
         connect: {
           id: Number(register_by),
         },
@@ -83,7 +127,7 @@ const Mutation = {
       where: {
         id: Number(id),
       },
-      data: input,
+      data: { ...rest },
     })
 
     pubsub.publish('author', {
@@ -95,18 +139,24 @@ const Mutation = {
 
     return authorUpdated
   },
-  updateBook: async (parent, { id, input }, { prisma, pubsub }, info) => {
-    const { register_by, writted_by } = input
+  updateBook: async (
+    parent,
+    { id, input },
+    { prisma, pubsub, request },
+    info
+  ) => {
+    const { register_by, writted_by, ...rest } = input
+    const userId = getUserId(request)
 
     if (register_by)
-      input.users = {
+      rest.users = {
         connect: {
           id: Number(register_by),
         },
       }
 
     if (writted_by)
-      input.authors = {
+      rest.authors = {
         connect: {
           id: Number(writted_by),
         },
@@ -114,7 +164,7 @@ const Mutation = {
 
     const updatedBook = await prisma.books.update({
       where: { id: Number(id) },
-      data: input,
+      data: { ...rest },
     })
 
     pubsub.publish(`book ${updatedBook.writted_by}`, {
@@ -126,10 +176,16 @@ const Mutation = {
 
     return updatedBook
   },
-  updateUser: (parent, { id, input }, { prisma }, info) => {
+  updateUser: async (parent, { id, input }, { prisma }, info) => {
+    const { password } = input
+
+    if (password) input.password = await hashPassword(input.password)
+
     return prisma.users.update({
-      where: { id },
-      input,
+      where: { id: Number(id) },
+      data: {
+        ...input,
+      },
     })
   },
 }

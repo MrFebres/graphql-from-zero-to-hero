@@ -48,10 +48,23 @@ input createBookInput {
   writted_by: ID
 }
 
-input createUserInput {
+input loginInput {
+  email: String!
+  password: String!
+}
+
+input signUpInput {
   name: String!
   email: String!
   lastname: String!
+  password: String!
+}
+
+input updateUserInput {
+  name: String
+  email: String
+  lastname: String
+  password: String
 }
 
 input updateAuthorInput {
@@ -69,11 +82,9 @@ input updateBookInput {
   writted_by: ID
 }
 
-input updateUserInput {
-  name: String
-  email: String
-  lastname: String
-  password: String
+type AuthPayload {
+  user: User!
+  token: String!
 }
 
 enum MutationType {
@@ -92,8 +103,9 @@ type Query {
 type Mutation {
   createAuthor(input: createAuthorInput!): Author!
   createBook(input: createBookInput!): Book!
-  createUser(input: createUserInput!): User!
   deleteBook(id: ID!): Book!
+  login(input: loginInput!): AuthPayload!
+  signUp(input: signUpInput!): AuthPayload!
   updateAuthor(id: ID!, input: updateAuthorInput!): Author!
   updateBook(id: ID!, input: updateBookInput!): Book!
   updateUser(id: ID!, input: updateUserInput!): User!

@@ -33,6 +33,7 @@ model users {
   name     String
   lastname String
   email    String    @unique
+  password String
   authors  authors[]
   books    books[]
 }

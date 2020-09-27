@@ -1,5 +1,9 @@
+import { getUserId } from '../utils'
+
 const Author = {
-  books: (parent, args, { prisma }, info) => {
+  books: (parent, args, { prisma, request }, info) => {
+    const userId = getUserId(request)
+
     return prisma.authors
       .findOne({
         where: {
@@ -8,7 +12,9 @@ const Author = {
       })
       .books()
   },
-  register_by: (parent, args, { prisma }, info) => {
+  register_by: (parent, args, { prisma, request }, info) => {
+    const userId = getUserId(request)
+
     return prisma.authors
       .findOne({
         where: {
