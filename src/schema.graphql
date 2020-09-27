@@ -30,7 +30,7 @@ type User {
   id: ID!
   name: String
   email: String
-  lastName: String
+  lastname: String
 }
 
 input createAuthorInput {
@@ -40,7 +40,7 @@ input createAuthorInput {
 }
 
 input createBookInput {
-  despcription: String
+  description: String
   price: Float!
   quantity: Int!
   register_by: ID!
@@ -51,8 +51,7 @@ input createBookInput {
 input createUserInput {
   name: String!
   email: String!
-  lastName: String!
-  password: String!
+  lastname: String!
 }
 
 input updateAuthorInput {
@@ -62,7 +61,7 @@ input updateAuthorInput {
 }
 
 input updateBookInput {
-  despcription: String
+  description: String
   price: Float
   quantity: Int
   register_by: ID
@@ -73,7 +72,7 @@ input updateBookInput {
 input updateUserInput {
   name: String
   email: String
-  lastName: String
+  lastname: String
   password: String
 }
 

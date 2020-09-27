@@ -5,24 +5,24 @@ const Query = {
   // argumentos, inputs del cliente o específicaciones que provienen del cliente.
   // contexto, ámbito u entorno que posee en el graphQL y poder acceder desde cualquier resolver.
   // Información,
-  author: (parent, { id }, { db }, info) => {
-    if (!id) return db.authors;
+  author: (parent, { id }, { prisma }, info) => {
+    if (!id) return prisma.authors.findMany()
 
-    return db.authors.filter(author => author.id === id);
+    return prisma.authors.findOne({ where: { id } })
   },
-  book: (parent, { id }, { db }, info) => {
-    if (!id) return db.books;
+  book: (parent, { id }, { prisma }, info) => {
+    if (!id) return prisma.books.findMany()
 
-    return db.books.filter(book => book.id === id);
+    return prisma.books.findOne({ where: { id } })
   },
   hello: (parent, args, ctx, info) => {
-    const { name } = args;
-    return `Hello ${name || 'World'}`;
+    const { name } = args
+    return `Hello ${name || 'World'}`
   },
-  user: (parent, { id }, { db }, info) => {
-    if (!id) return db.users;
-    return db.users.filter(user => user.id === id);
+  user: (parent, { id }, { prisma }, info) => {
+    if (!id) return prisma.users.findMany() // Para obtener todos los usuarios de la tabla
+    return prisma.users.findOne({ where: { id } })
   },
-};
+}
 
-export default Query;
+export default Query
