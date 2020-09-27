@@ -33,6 +33,24 @@ type User {
   lastname: String
 }
 
+input AuthorOrderByInput {
+  id: OrderByArg
+  name: OrderByArg
+  country: OrderByArg
+}
+
+input BookOrderByInput {
+  id: OrderByArg
+  title: OrderByArg
+  description: OrderByArg
+  quantity: OrderByArg
+}
+
+enum OrderByArg {
+  asc
+  desc
+}
+
 input createAuthorInput {
   name: String!
   country: String!
@@ -94,8 +112,8 @@ enum MutationType {
 }
 
 type Query {
-  author(id: ID): [Author!]!
-  book(id: ID): [Book!]!
+  author(id: ID, orderBy: AuthorOrderByInput, take: Int, skip: Int): [Author!]!
+  book(id: ID, orderBy: BookOrderByInput, take: Int, skip: Int): [Book!]!
   hello(name: String): String!
   user(id: ID): [User!]!
 }

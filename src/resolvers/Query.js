@@ -7,17 +7,27 @@ const Query = {
   // argumentos, inputs del cliente o específicaciones que provienen del cliente.
   // contexto, ámbito u entorno que posee en el graphQL y poder acceder desde cualquier resolver.
   // Información,
-  author: (parent, { id }, { prisma, request }, info) => {
+  author: (parent, { id, orderBy, skip, take }, { prisma, request }, info) => {
     const userId = getUserId(request)
 
-    if (!id) return prisma.authors.findMany()
+    if (!id)
+      return prisma.authors.findMany({
+        orderBy,
+        take,
+        skip,
+      })
 
     return prisma.authors.findOne({ where: { id } })
   },
-  book: (parent, { id }, { prisma, request }, info) => {
+  book: (parent, { id, orderBy, skip, take }, { prisma, request }, info) => {
     const userId = getUserId(request)
 
-    if (!id) return prisma.books.findMany()
+    if (!id)
+      return prisma.books.findMany({
+        orderBy,
+        take,
+        skip,
+      })
 
     return prisma.books.findOne({ where: { id } })
   },
